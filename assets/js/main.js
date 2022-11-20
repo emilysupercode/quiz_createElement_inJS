@@ -60,8 +60,8 @@ let data = [
         answer: "Pacific Ocean"
     }
 ]
-console.log(data)
 
+// as input=radio
 function createPage() {
     let insertElement = document.querySelector("#content");
     let newh1El = document.createElement("h1");
@@ -71,8 +71,8 @@ function createPage() {
     insertElement.appendChild(newh1El);
 
     data.forEach((object) => {
+        console.log(object)
         let newSection = document.createElement("section");
-
         let newImg = document.createElement("img");
         newImg.src = object.url;
 
@@ -82,37 +82,49 @@ function createPage() {
         let newArticle = document.createElement("article");
 
         insertElement.appendChild(newSection);
+
         newSection.appendChild(newImg);
         newSection.appendChild(newP);
         newSection.appendChild(newArticle);
         resultOutput.innerHTML = "Your score: 0 out of 10."
         object.choice.forEach((singleChoice) => {
-            let newButton = document.createElement("button");
-            newButton.textContent = singleChoice;
-            newArticle.appendChild(newButton);
-            function rightOrWrong() {
+            let newButtonLabel = document.createElement("label");
+            newButtonLabel.classList.add("button");
+            let newButtonRadio = document.createElement("input");
+            newButtonRadio.type = "radio";
+            newButtonLabel.textContent = singleChoice;
+            newArticle.appendChild(newButtonLabel);
+            newButtonLabel.appendChild(newButtonRadio);
+            function fadeOut() {
+                newSection.classList.add("answered")
+            }
+            let myTimeout;
+            let rightOrWrong = function rightOrWrong() {
                 if (singleChoice === object.answer) {
-                    newButton.classList.add("correct");
+                    newButtonLabel.classList.add("correct");
                     correctAnswer++;
+                    newSection.classList.add("initialAnswer");
                     if (correctAnswer >= 5) {
                         resultOutput.style.color = "green";
                     } else {
                         resultOutput.style.color = "red";
                     }
                     resultOutput.innerHTML = "Your score: " + correctAnswer + " out of 10.";
+                    myTimeout = setTimeout(fadeOut, 2000)
+
                 } else {
-                    newButton.classList.add("incorrect");
+                    newButtonLabel.classList.add("incorrect");
+                    myTimeout = setTimeout(fadeOut, 2000)
                     return;
                 }
-            }
-            newButton.addEventListener("click", rightOrWrong);
 
+            }
+            newButtonLabel.addEventListener("click", rightOrWrong);
         })
+
 
     })
     insertElement.appendChild(resultOutput);
 
-    // console.log(resultOutput)
-    // insertElement.appendChild(resultOutput);
 }
 createPage();
